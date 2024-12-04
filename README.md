@@ -15,3 +15,30 @@ Cette application contient aussi un autre module qui permet de contrôler le vol
    ```bash
    git clone https://github.com/baptiste-bedouret/TrackingProject.git
    cd TrackingProject
+
+2. Créez un environnement virtuel et activez le :
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+```
+
+3. Installez les dépendances :
+```bash
+pip install -r requirements.txt
+```
+
+## Utilisation
+
+Lancez le programme :
+```bash
+python main.py
+ou 
+python VolumeHandControl.py
+```
+
+Appuyer sur 'q' pour quitter l'application.
+
+
+
+
