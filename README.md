@@ -2,8 +2,8 @@
 
 # Application de détection de gestes
 
-Cette application détecte les gestes *dab* et *Jul* à partir d'une caméra en temps réel.
-Elle contient aussi un autre module qui permet de contrôler le volume de votre machine à l'aide de votre pouce et de votre index.
+Cette application détecte le geste *dab* et le signe *Jul* à partir d'une caméra en temps réel. Une musique spécifique pour chaque mouvement se lance ensuite.  
+Cette application contient aussi un autre module qui permet de contrôler le volume de votre machine à l'aide de votre pouce et de votre index.
 
 ## Prérequis
 - Python 3.11 ou supérieur
