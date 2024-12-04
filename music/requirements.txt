@@ -1,0 +1,7 @@
+opencv-python
+mediapipe
+pygame
+playsound
+threading
+math
+time
