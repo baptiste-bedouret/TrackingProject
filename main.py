@@ -21,58 +21,18 @@ def calculate_angle(v1, v2):
     return math.degrees(math.acos(dot_product / (magnitude_v1 * magnitude_v2)))
 
 
-def dab_right(landmarks):
-
-    # Ensure all landmarks are available
-    if len(landmarks) >= 33:
-        # Right side landmarks
-        right_shoulder = landmarks[12][1:3]
-        right_elbow = landmarks[14][1:3]
-        right_wrist = landmarks[16][1:3]
-
-        # Left side landmarks
-        left_elbow = landmarks[13][1:3]
-
-        # Head (nose landmark)
-        head = landmarks[0][1:3]
-
-        # Compute vectors
-        shoulder_to_elbow = (right_elbow[0] - right_shoulder[0], right_elbow[1] - right_shoulder[1])
-        elbow_to_wrist = (right_wrist[0] - right_elbow[0], right_wrist[1] - right_elbow[1])
-
-        # Angle between shoulder-to-elbow and elbow-to-wrist (should be close to 180 for a straight arm)
-        right_elbow_angle = calculate_angle(shoulder_to_elbow, elbow_to_wrist)
-
-        # Ensure the right arm is extended (elbow angle close to 0 degrees)
-        right_arm_extended = 0 <= right_elbow_angle <= 30
-
-        # Compute the vector for the right arm (shoulder to wrist) for horizontal alignment
-        right_arm_vector = (right_wrist[0] - right_shoulder[0], right_wrist[1] - right_shoulder[1])
-        right_arm_angle = math.degrees(math.atan2(-right_arm_vector[1], right_arm_vector[0]))
-
-        # Check if the right arm is nearly horizontal
-        right_arm_near_horizontal = 140 <= right_arm_angle <= 175
-
-        # Check if the head is near the left elbow
-        head_near_left_elbow = abs(head[0] - left_elbow[0]) < 150 and abs(head[1] - left_elbow[1]) < 150
-
-        # Dab detection
-        dab_right = right_arm_extended and right_arm_near_horizontal and head_near_left_elbow
-
-    return dab_right
-
-
 def dab_left(landmarks):
 
     # Ensure all landmarks are available
     if len(landmarks) >= 33:
+
         # Right side landmarks
-        right_elbow = landmarks[14][1:3]
+        right_elbow = landmarks[13][1:3]
 
         # Left side landmarks
-        left_shoulder = landmarks[11][1:3]
-        left_elbow = landmarks[13][1:3]
-        left_wrist = landmarks[15][1:3]
+        left_shoulder = landmarks[12][1:3]
+        left_elbow = landmarks[14][1:3]
+        left_wrist = landmarks[16][1:3]
 
         # Head (nose landmark)
         head = landmarks[0][1:3]
@@ -103,12 +63,53 @@ def dab_left(landmarks):
     return dab_left
 
 
+def dab_right(landmarks):
+
+    # Ensure all landmarks are available
+    if len(landmarks) >= 33:
+        # Left side landmarks
+        left_elbow = landmarks[14][1:3]
+
+        # Right side landmarks
+        right_shoulder = landmarks[11][1:3]
+        right_elbow = landmarks[13][1:3]
+        right_wrist = landmarks[15][1:3]
+
+        # Head (nose landmark)
+        head = landmarks[0][1:3]
+
+        # Compute vectors
+        shoulder_to_elbow = (right_elbow[0] - right_shoulder[0], left_elbow[1] - right_shoulder[1])
+        elbow_to_wrist = (right_wrist[0] - right_elbow[0], right_wrist[1] - right_elbow[1])
+
+        # Angle between shoulder-to-elbow and elbow-to-wrist (should be close to 180 for a straight arm)
+        right_elbow_angle = calculate_angle(shoulder_to_elbow, elbow_to_wrist)
+
+        # Ensure the left arm is extended (elbow angle close to 0 degrees)
+        right_arm_extended = 0 <= right_elbow_angle <= 30
+
+        # Compute the vector for the right arm (shoulder to wrist) for horizontal alignment
+        right_arm_vector = (right_wrist[0] - right_shoulder[0], right_wrist[1] - right_shoulder[1])
+        right_arm_angle = math.degrees(math.atan2(-right_arm_vector[1], right_arm_vector[0]))
+
+        # Check if the left arm is nearly horizontal
+        right_arm_near_horizontal = 5 <= right_arm_angle <= 40
+
+        # Check if the head is near the left elbow
+        head_near_left_elbow = abs(head[0] - left_elbow[0]) < 150 and abs(head[1] - left_elbow[1]) < 150
+
+        # Dab detection
+        dab_right = right_arm_extended and right_arm_near_horizontal and head_near_left_elbow
+
+    return dab_right
+
+
 def is_dab(landmarks):
     """
     Detect if the user is performing a dab.
     Returns True if a dab is detected, otherwise False.
     """
-    if dab_right(landmarks) or dab_left(landmarks):
+    if dab_right(landmarks):
         return True
     return False
 
