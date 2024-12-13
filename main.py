@@ -22,6 +22,9 @@ def calculate_angle(v1, v2):
 
 
 def dab_left(landmarks):
+    """
+    Check if the user is performing a dab to the left.
+    """
 
     # Ensure all landmarks are available
     if len(landmarks) >= 33:
@@ -52,7 +55,8 @@ def dab_left(landmarks):
         left_arm_angle = math.degrees(math.atan2(-left_arm_vector[1], left_arm_vector[0]))
 
         # Check if the left arm is nearly horizontal
-        left_arm_near_horizontal = 5 <= left_arm_angle <= 40
+        left_arm_near_horizontal = 150 <= left_arm_angle <= 175
+        # print("left arm angle: ", left_arm_angle)
 
         # Check if the head is near the right elbow
         head_near_right_elbow = abs(head[0] - right_elbow[0]) < 150 and abs(head[1] - right_elbow[1]) < 150
@@ -64,9 +68,14 @@ def dab_left(landmarks):
 
 
 def dab_right(landmarks):
+    """
+    Check if the user is performing a dab to the right.
+    """
+    dab_right = False
 
     # Ensure all landmarks are available
     if len(landmarks) >= 33:
+
         # Left side landmarks
         left_elbow = landmarks[14][1:3]
 
@@ -79,7 +88,7 @@ def dab_right(landmarks):
         head = landmarks[0][1:3]
 
         # Compute vectors
-        shoulder_to_elbow = (right_elbow[0] - right_shoulder[0], left_elbow[1] - right_shoulder[1])
+        shoulder_to_elbow = (right_elbow[0] - right_shoulder[0], right_elbow[1] - right_shoulder[1])
         elbow_to_wrist = (right_wrist[0] - right_elbow[0], right_wrist[1] - right_elbow[1])
 
         # Angle between shoulder-to-elbow and elbow-to-wrist (should be close to 180 for a straight arm)
@@ -109,7 +118,7 @@ def is_dab(landmarks):
     Detect if the user is performing a dab.
     Returns True if a dab is detected, otherwise False.
     """
-    if dab_right(landmarks):
+    if dab_right(landmarks) or dab_left(landmarks):
         return True
     return False
 
