@@ -17,7 +17,7 @@ def index():
 
 def generate():
     wCam, hCam = 1280, 720
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0) # Virtual camera is 1, real camera is 0
     cap.set(3, wCam)
     cap.set(4, hCam)
 
