@@ -228,7 +228,7 @@ def main():
 
         # Detect pose
         image = pose_detector.findPose(image, draw=False)    
-        pose_landmarks = pose_detector.findPosition(image)
+        pose_landmarks = pose_detector.findPosition(image, draw=False)
 
         # Check if a dab is detected
         if is_dab(pose_landmarks) and not music_playing:
