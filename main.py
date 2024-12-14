@@ -176,14 +176,14 @@ def is_jul_sign(landmarks):
         # Check if hand 1 performs the Jul sign
         if thumb_extended_0 and pinky_bent_0 and index_extended_0 and middle_extended_0 and ring_bent_0:
             jul_hands.append(True)
-            print("Hand 1 performs the Jul sign")
+            # print("Hand 1 performs the Jul sign")
         else:
             jul_hands.append(False)
 
         # Check if hand 2 performs the Jul sign
         if thumb_extended_1 and pinky_bent_1 and index_extended_1 and middle_extended_1 and ring_bent_1:
             jul_hands.append(True)
-            print("Hand 2 performs the Jul sign")
+            # print("Hand 2 performs the Jul sign")
         else:
             jul_hands.append(False)
 
@@ -219,7 +219,6 @@ def main():
     pose_detector = pt.PoseDetector()
 
     music_playing = False
-
     last_dab_time = None
     last_jul_sign_time = None
 
