@@ -25,6 +25,7 @@ def dab_left(landmarks):
     """
     Check if the user is performing a dab to the left.
     """
+    dab_left = False
 
     # Ensure all landmarks are available
     if len(landmarks) >= 33:
@@ -56,7 +57,6 @@ def dab_left(landmarks):
 
         # Check if the left arm is nearly horizontal
         left_arm_near_horizontal = 150 <= left_arm_angle <= 175
-        # print("left arm angle: ", left_arm_angle)
 
         # Check if the head is near the right elbow
         head_near_right_elbow = abs(head[0] - right_elbow[0]) < 150 and abs(head[1] - right_elbow[1]) < 150
@@ -126,7 +126,7 @@ def is_dab(landmarks):
 def play_music_1():
     """Plays the music file and waits for it to finish."""
     pygame.mixer.init()
-    pygame.mixer.music.load("music/MCFLY & CARLITO - JEFFECTUE LE DAB.wav")
+    pygame.mixer.music.load("music/MCFLY & CARLITO_JEFFECTUE LE DAB.wav")
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy():
         pygame.time.Clock().tick(10)  # Check every 100ms
@@ -161,8 +161,8 @@ def is_jul_sign(landmarks):
         pinky_tip_1 = landmarks_1[20]   
 
         # Conditions for Jul sign:
-        pinky_bent_0 = pinky_tip_0[1] > landmarks_0[19][1]  # Pinky below DIP joint
-        ring_bent_0 = ring_tip_0[1] > landmarks_0[15][1]  # Ring finger below DIP joint
+        pinky_bent_0 = pinky_tip_0[1] > landmarks_0[19][1]  # Pinky below DIP joint - 18
+        ring_bent_0 = ring_tip_0[1] > landmarks_0[15][1]  # Ring finger below DIP joint - 14
         thumb_extended_0 = thumb_tip_0[1] < landmarks_0[2][1]  # Thumb above MCP joint
         index_extended_0 = index_tip_0[1] < landmarks_0[7][1]  # Index finger above DIP joint
         middle_extended_0 = middle_tip_0[1] < landmarks_0[11][1]  # Middle finger above DIP joint
@@ -176,12 +176,14 @@ def is_jul_sign(landmarks):
         # Check if hand 1 performs the Jul sign
         if thumb_extended_0 and pinky_bent_0 and index_extended_0 and middle_extended_0 and ring_bent_0:
             jul_hands.append(True)
+            print("Hand 1 performs the Jul sign")
         else:
             jul_hands.append(False)
 
         # Check if hand 2 performs the Jul sign
         if thumb_extended_1 and pinky_bent_1 and index_extended_1 and middle_extended_1 and ring_bent_1:
             jul_hands.append(True)
+            print("Hand 2 performs the Jul sign")
         else:
             jul_hands.append(False)
 
@@ -194,7 +196,7 @@ def is_jul_sign(landmarks):
 def play_music_2():
     """Plays the music file and waits for it to finish."""
     pygame.mixer.init()
-    pygame.mixer.music.load("music/Jul - JCVD  Clip Officiel  2019.wav")
+    pygame.mixer.music.load("music/Jul_JCVD.wav")
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy():
         pygame.time.Clock().tick(10)  # Check every 100ms
