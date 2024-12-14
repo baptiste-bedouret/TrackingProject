@@ -34,7 +34,7 @@ def generate():
             break
         else:
             # Detect pose
-            image = pose_detector.findPose(image)
+            image = pose_detector.findPose(image, draw=False)
             pose_landmarks = pose_detector.findPosition(image)
 
             # Check if a dab is detected
@@ -57,7 +57,7 @@ def generate():
                 last_dab_time = None
 
             # Detect hands
-            image = hand_detector.findHands(image)
+            image = hand_detector.findHands(image, draw=False)
             hand_landmarks = []
             if hand_detector.results.multi_hand_landmarks:
                 for hand_no in range(len(hand_detector.results.multi_hand_landmarks)):
