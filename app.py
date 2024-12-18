@@ -1,23 +1,42 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request, redirect, url_for
 import cv2
 import mediapipe as mp
 import threading
 import time
-import math
-import pygame
 import main as m
 import HandTracking as htm
 import PoseTracking as pt
 
 app = Flask(__name__)
 
-@app.route("/")
-def index():
-    return render_template("index.html") 
+# Global variable to store the selected camera
+selected_camera = 0  # Default camera
 
-def generate():
+def get_available_cameras(max_cam=5):
+    """Detect and return a list of available cameras."""
+    available_cameras = []
+    for i in range(max_cam):
+        cap = cv2.VideoCapture(i)
+        if cap.isOpened():
+            available_cameras.append(i)
+            cap.release()
+    return available_cameras
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    global selected_camera
+    available_cameras = get_available_cameras()
+
+    if request.method == "POST":
+        selected_camera = int(request.form["camera"])
+        return redirect(url_for("index"))
+
+    return render_template("index.html", cameras=available_cameras, selected_camera=selected_camera)
+
+def generate(selected_camera):
+    """Generate video stream from the selected camera."""
     wCam, hCam = 1280, 720
-    cap = cv2.VideoCapture(0) # Virtual camera is 1, real camera is 0
+    cap = cv2.VideoCapture(selected_camera)
     cap.set(3, wCam)
     cap.set(4, hCam)
 
@@ -42,18 +61,15 @@ def generate():
                 last_dab_time = time.time()
                 cv2.putText(image, "Dab Detected!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
 
-                # Play music in a separate thread to avoid blocking
                 def play_and_reset_flag():
                     m.play_music_1()
                     nonlocal music_playing
-                    music_playing = False  # Reset the flag when music finishes
+                    music_playing = False
                 threading.Thread(target=play_and_reset_flag).start()
 
-            # Keep displaying the text for 5 seconds after the last detection
             if last_dab_time and time.time() - last_dab_time < 5:
                 cv2.putText(image, "Dab Detected!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
             else:
-                # Clear the timestamp after 5 seconds
                 last_dab_time = None
 
             # Detect hands
@@ -67,32 +83,29 @@ def generate():
             if m.is_jul_sign(hand_landmarks):
                 last_jul_sign_time = time.time()
                 cv2.putText(image, "Jul Sign Detected!", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
-                # print("Jul Sign Detected!")
 
-                # Play music in a separate thread to avoid blocking
                 def play_and_reset_flag():
                     m.play_music_2()
                     nonlocal music_playing
-                    music_playing = False  # Reset the flag when music finishes
+                    music_playing = False
                 threading.Thread(target=play_and_reset_flag).start()
 
-            # Keep displaying the text for 5 seconds after the last detection
             if last_jul_sign_time and time.time() - last_jul_sign_time < 5:
                 cv2.putText(image, "Jul Sign Detected!", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
             else:
-                # Clear the timestamp after 5 seconds
                 last_jul_sign_time = None
 
             _, buffer = cv2.imencode('.jpg', image)
             image = buffer.tobytes()
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')  
-            
+                   b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
+
 @app.route('/video_feed')
 def video_feed():
-    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    """Route for the video feed."""
+    global selected_camera
+    return Response(generate(selected_camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0", port=5000, debug=True)
     from os import environ
     app.run(host='0.0.0.0', port=int(environ.get('PORT', 5000)))
